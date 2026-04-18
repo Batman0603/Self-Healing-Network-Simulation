@@ -1,5 +1,6 @@
 import asyncio
 import httpx
+from shared.models.network_event import NetworkEvent
 from node_manager import sync_nodes, update_nodes
 from publisher import send_data
 from config import INTERVAL, NETWORK_NODES_URL
@@ -24,6 +25,12 @@ async def run_simulation():
                 if not data:
                     print("[SIMULATION] Idle - No nodes found. Waiting for Network Service...")
                 else:
+                    # Check for failed nodes to trigger events
+                    for node_id, node_info in data.items():
+                        if node_info["status"] == "down":
+                            event = NetworkEvent(node_id=node_id, status="DOWN")
+                            # Logic to publish 'event' can be added here
+
                     print(f"[SIMULATION] Running - Active nodes: {len(data)}")
                     await send_data(client, data)
 

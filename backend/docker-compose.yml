@@ -1,0 +1,77 @@
+services:
+  network-service:
+    build:
+      context: .
+      dockerfile: network-service/Dockerfile
+    ports:
+      - "8001:8001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  protocol-service:
+    build:
+      context: .
+      dockerfile: protocol-service/Dockerfile
+    ports:
+      - "8011:8011"
+    depends_on:
+      network-service:
+        condition: service_started
+
+  api-gateway:
+    build:
+      context: .
+      dockerfile: api-gateway/Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      network-service:
+        condition: service_started
+      protocol-service:
+        condition: service_started
+
+  simulation-service:
+    build:
+      context: .
+      dockerfile: simulation-service/Dockerfile
+    ports:
+      - "8010:8010"
+    depends_on:
+      network-service:
+        condition: service_started
+      protocol-service:
+        condition: service_started
+      api-gateway:
+        condition: service_started
+
+  ai-service:
+    build:
+      context: .
+      dockerfile: ai-service/Dockerfile
+    ports:
+      - "8013:8013"
+    depends_on:
+      api-gateway:
+        condition: service_started
+
+  metrics-service:
+    build:
+      context: .
+      dockerfile: metrics-service/Dockerfile
+    ports:
+      - "8012:8012"
+    depends_on:
+      api-gateway:
+        condition: service_started
+
+  websocket-service:
+    build:
+      context: .
+      dockerfile: websocket-service/Dockerfile
+    ports:
+      - "8002:8002"
+    depends_on:
+      - metrics-service

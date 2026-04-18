@@ -1,6 +1,6 @@
 # Service URLs
-AI_SERVICE_URL = "http://127.0.0.1:8013/analyze"
-WEBSOCKET_URL = "http://127.0.0.1:8002/broadcast"
+AI_SERVICE_URL = "http://ai-service:8013/analyze"
+WEBSOCKET_URL = "http://websocket-service:8002/broadcast"
 
 # Timeouts
 REQUEST_TIMEOUT = 2
