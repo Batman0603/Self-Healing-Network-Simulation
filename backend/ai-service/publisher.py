@@ -1,13 +1,13 @@
-import requests
+import os
 
-API_GATEWAY_URL = "http://127.0.0.1:8000"
+import httpx
 
-def publish_result(data):
+API_GATEWAY_URL = os.getenv("API_GATEWAY_URL", "http://api-gateway:8000")
+
+
+async def publish_result(data):
     try:
-        requests.post(
-            f"{API_GATEWAY_URL}/ai-update",
-            json=data,
-            timeout=2
-        )
+        async with httpx.AsyncClient(timeout=2.0) as client:
+            await client.post(f"{API_GATEWAY_URL}/ai-update", json=data)
     except Exception as e:
         print("[PUBLISH ERROR]", e)

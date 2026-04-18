@@ -50,3 +50,17 @@ def detect_anomaly(node_data):
     except Exception as e:
         print("[ANOMALY ERROR]", e)
         return False
+
+
+def detect_anomalies(nodes):
+    anomalies = []
+
+    if not isinstance(nodes, dict):
+        return anomalies
+
+    for node_name, node_data in nodes.items():
+        payload = {"node": node_name, **node_data}
+        if detect_anomaly(payload):
+            anomalies.append(payload)
+
+    return anomalies

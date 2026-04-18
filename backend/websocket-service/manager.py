@@ -1,3 +1,4 @@
+import json
 from typing import List
 from fastapi import WebSocket
 
@@ -30,3 +31,8 @@ class ConnectionManager:
 
         for conn in disconnected:
             self.disconnect(conn)
+
+manager = ConnectionManager()
+
+async def broadcast_to_all(data: dict):
+    await manager.broadcast(json.dumps(data))
