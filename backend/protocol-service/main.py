@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 import asyncio
 from health import get_health_status
-from gossip import run_gossip
+from gossip import run_gossip, node_views
 from heartbeat import run_heartbeat
 
 app = FastAPI()
@@ -9,6 +9,10 @@ app = FastAPI()
 @app.get("/health")
 def health():
     return get_health_status()
+
+@app.get("/state")
+def get_state():
+    return node_views
 
 @app.on_event("startup")
 async def startup():
